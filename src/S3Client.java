@@ -158,6 +158,28 @@ public class S3Client {
         return true;
     }
 
+
+    private static boolean UploadSingleObjectWithSpecifiedName(String BucketName, String ObjectPath, String KeyName){
+
+        AmazonS3 s3Client = getS3Client();
+
+        String ObjectKeyName = KeyName;
+
+        long FileLen = Paths.get(ObjectPath).toFile().length();
+        System.out.format("Uploading %s to S3 bucket %s...\n", ObjectPath, BucketName);
+        try {
+            //s3Client.putObject(BucketName, ObjectKeyName, ObjectPath);
+            File file = new File(ObjectPath);
+            s3Client.putObject(new PutObjectRequest(
+                    BucketName, ObjectKeyName, file));
+        } catch (AmazonServiceException e) {
+            System.err.println(e.getErrorMessage());
+            return false;
+        }
+
+        return true;
+    }
+
     public static void main( String[] args ) {
         System.out.println( "begin to run!" );
 
@@ -174,7 +196,9 @@ public class S3Client {
         String ObjectPath = "C:\\Users\\fqyya\\Desktop\\qq.jpg";
         //String ObjectPath = "C:\\dc_exercise\\qian3.jpg";
 
-        if(UploadSingleObject(BucketName, ObjectPath)){
+
+        //if(UploadSingleObject(BucketName, ObjectPath)){
+        if(UploadSingleObjectWithSpecifiedName(BucketName, ObjectPath, "hello kitty")){
             System.out.println("successfully upload object " + ObjectPath);
         }
         else{
